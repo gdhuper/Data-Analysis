@@ -43,6 +43,9 @@ def parse_maybe_int(i):
     else:
         return int(i)
 
+for engagement_record in daily_engagement:
+    engagement_record['account_key'] = engagement_record['acct']
+    del [engagement_record['acct']]
 
 # Clean up the data types in the enrollments table
 for enrollment in enrollments:
@@ -63,20 +66,21 @@ for submission in project_submissions:
     submission['completion_date'] = parse_date(submission['completion_date'])
     submission['creation_date'] = parse_date(submission['creation_date'])
 
+
+
+
+def get_unique_students(data):
+    unique_students = set()
+    for data_point in data:
+        unique_students.add(data_point['account_key'])
+    return unique_students
+
 enrollment_num_rows = 0  # Replace this with your code
 for i in enrollments:
     enrollment_num_rows += 1
 
 print (enrollment_num_rows)
-enrollment_num_unique_students = 0  # Replace this with your code
-templist = []
-for i in enrollments:
-    if i['account_key'] not in templist:
-        templist.append(i['account_key'])
-        enrollment_num_unique_students += 1
-    else:
-        continue
-
+enrollment_num_unique_students = len(get_unique_students(enrollments))  # Replace this with your code
 
 print ("enrollment_unique " + str(enrollment_num_unique_students))
 
@@ -86,29 +90,26 @@ for i in daily_engagement:
     engagement_num_rows += 1
 print (engagement_num_rows)
 
-templist2 = []
-engagement_num_unique_students = 0  # Replace this with your code
-for i in daily_engagement:
-    if i['acct'] not in templist2:
-        templist2.append(i['acct'])
-        engagement_num_unique_students += 1
-    else:
-        continue
 
-print ("engagement_unique " + str(engagement_num_unique_students))
+engagement_num_unique_students = get_unique_students(daily_engagement) # Replace this with your code
+
+print ("engagement_unique " + str(len(engagement_num_unique_students)))
 
 submission_num_rows = 0  # Replace this with your code
-templist3 = []
 for i in project_submissions:
     submission_num_rows += 1
 print (submission_num_rows)
 
-submission_num_unique_students = 0  # Replace this with your code
-for i in project_submissions:
-    if i['account_key'] not in templist3:
-        templist3.append(i['account_key'])
-        submission_num_unique_students += 1
-    else:
-        continue
+submission_num_unique_students = len(get_unique_students(project_submissions))  # Replace this with your code
 
 print ("submission_unique " + str(submission_num_unique_students))
+
+num_problem_students = 0
+
+for i in enrollments:
+    student = i['account_key']
+    if student not in engagement_num_unique_students and i['join_date'] != i['cancel_date']:
+        num_problem_students += 1
+
+
+print("num_prob_students: " + str(num_problem_students))
