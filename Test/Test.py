@@ -75,41 +75,33 @@ def get_unique_students(data):
         unique_students.add(data_point['account_key'])
     return unique_students
 
-enrollment_num_rows = 0  # Replace this with your code
-for i in enrollments:
-    enrollment_num_rows += 1
-
-print (enrollment_num_rows)
-enrollment_num_unique_students = len(get_unique_students(enrollments))  # Replace this with your code
-
-print ("enrollment_unique " + str(enrollment_num_unique_students))
-
-engagement_num_rows = 0  # Replace this with your code
-
-for i in daily_engagement:
-    engagement_num_rows += 1
-print (engagement_num_rows)
+enrollment_num_rows = len(enrollments)
+enrollment_num_unique_students = get_unique_students(enrollments)  # Replace this with your code
 
 
+engagement_num_rows = len(daily_engagement)
 engagement_num_unique_students = get_unique_students(daily_engagement) # Replace this with your code
 
-print ("engagement_unique " + str(len(engagement_num_unique_students)))
+submission_num_rows = len(project_submissions)
+submission_num_unique_students = get_unique_students(project_submissions)  # Replace this with your code
 
-submission_num_rows = 0  # Replace this with your code
-for i in project_submissions:
-    submission_num_rows += 1
-print (submission_num_rows)
 
-submission_num_unique_students = len(get_unique_students(project_submissions))  # Replace this with your code
-
-print ("submission_unique " + str(submission_num_unique_students))
-
+# unique students
 num_problem_students = 0
-
+num_pro_students = set()
 for i in enrollments:
     student = i['account_key']
     if student not in engagement_num_unique_students and i['join_date'] != i['cancel_date']:
         num_problem_students += 1
+        num_pro_students.add(student)
 
 
+#printing stats
+print(enrollment_num_rows)
+print(engagement_num_rows)
+print(submission_num_rows)
+print("enrollment_unique " + str(len(enrollment_num_unique_students)))
+print("submission_unique " + str(len(submission_num_unique_students)))
+print("engagement_unique " + str(len(engagement_num_unique_students)))
 print("num_prob_students: " + str(num_problem_students))
+print(num_pro_students)
