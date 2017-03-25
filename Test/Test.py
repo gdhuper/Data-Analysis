@@ -77,7 +77,8 @@ for i in enrollments:
     else:
         continue
 
-print (enrollment_num_unique_students)
+
+print ("enrollment_unique " + str(enrollment_num_unique_students))
 
 engagement_num_rows = 0  # Replace this with your code
 
@@ -94,7 +95,7 @@ for i in daily_engagement:
     else:
         continue
 
-print (engagement_num_unique_students)
+print ("engagement_unique " + str(engagement_num_unique_students))
 
 submission_num_rows = 0  # Replace this with your code
 templist3 = []
@@ -110,4 +111,4 @@ for i in project_submissions:
     else:
         continue
 
-print (submission_num_unique_students)
+print ("submission_unique " + str(submission_num_unique_students))
