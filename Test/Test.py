@@ -96,12 +96,45 @@ for i in enrollments:
         num_pro_students.add(student)
 
 
+#weeding out udacity test accounts
+udacity_test_accounts = set()
+for enrollment in enrollments:
+    if enrollment['is_udacity']:
+        udacity_test_accounts.add(enrollment['account_key'])
+
+
+def remove_udacity_accounts(data):
+    non_udacity_data = []
+    for data_point in data:
+        if data_point['account_key'] not in udacity_test_accounts:
+            non_udacity_data.append(data_point)
+    return non_udacity_data
+
+
+
+non_udacity_enrollments = remove_udacity_accounts(enrollments)
+non_udacity_engagement = remove_udacity_accounts(daily_engagement)
+non_udacity_submissions = remove_udacity_accounts(project_submissions)
+
+
+# calculating paid students
+paid_students = {}
+for enrollment in non_udacity_enrollments:
+    if not enrollment['is_canceled'] or enrollment['days_to_cancel'] > 7:
+        account_key = enrollment['account_key']
+        enrollment_date = enrollment['join_date']
+        paid_students[account_key] = enrollment_date
+        
+print("paid students: " + str(len(paid_students)))
+
+
+
+
 #printing stats
-print(enrollment_num_rows)
-print(engagement_num_rows)
-print(submission_num_rows)
-print("enrollment_unique " + str(len(enrollment_num_unique_students)))
-print("submission_unique " + str(len(submission_num_unique_students)))
-print("engagement_unique " + str(len(engagement_num_unique_students)))
+print("total enrolled: " + str(enrollment_num_rows))
+print("total engaged: " + str(engagement_num_rows))
+print("total submissions: " + str(submission_num_rows))
+print("enrollment_unique: " + str(len(enrollment_num_unique_students)))
+print("submission_unique: " + str(len(submission_num_unique_students)))
+print("engagement_unique: " + str(len(engagement_num_unique_students)))
 print("num_prob_students: " + str(num_problem_students))
-print(num_pro_students)
