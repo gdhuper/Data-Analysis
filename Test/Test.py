@@ -2,6 +2,9 @@ import unicodecsv
 from datetime import datetime as dt
 from collections import defaultdict
 import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
 
 
 ## Longer version of code (replaced with shorter, equivalent version below)
@@ -136,7 +139,7 @@ print("paid students: " + str(len(paid_students)))
 # of the student joining.
 def within_one_week(join_date, engagement_date):
     time_delta = engagement_date - join_date
-    return time_delta.days < 7
+    return time_delta.days < 7 and time_delta.days >= 0
 
 def remove_free_trial_cancels(data):
     new_data = []
@@ -155,6 +158,13 @@ print(len(paid_engagement))
 print(len(paid_submissions))
 
 
+for engagement_record in paid_engagement:
+    if engagement_record['num_courses_visited'] > 0:
+        engagement_record['has_visited'] = 1
+    else:
+        engagement_record['has_visited'] = 0
+
+
 # calculating paid students for engagement
 paid_engagement_in_first_week = []
 
@@ -171,29 +181,106 @@ print("paid engagement in first week :" + str(len(paid_engagement_in_first_week)
 
 # Create a dictionary of engagement grouped by student.
 # The keys are account keys, and the values are lists of engagement records.
-engagement_by_account = defaultdict(list)
-for engagement_record in paid_engagement_in_first_week:
-    account_key = engagement_record['account_key']
-    engagement_by_account[account_key].append(engagement_record)
+def group_data(data, key_name):
+    grouped_data = defaultdict(list)
+    for data_point in data:
+        key = data_point[key_name]
+        grouped_data[key].append(data_point)
+    return grouped_data
+
+engagement_by_account = group_data(paid_engagement_in_first_week, 'account_key')
+
+
 
 
 
 # Create a dictionary with the total minutes each student spent in the classroom during the first week.
 # The keys are account keys, and the values are numbers (total minutes)
-total_minutes_by_account = {}
-for account_key, engagement_for_student in engagement_by_account.items():
-    total_minutes = 0
-    for engagement_record in engagement_for_student:
-        total_minutes += engagement_record['total_minutes_visited']
-    total_minutes_by_account[account_key] = total_minutes
+def sum_grouped_items(grouped_data, field_name):
+    summed_data = {}
+    for key, data_points in grouped_data.items():
+        total = 0
+        for data_point in data_points:
+            total += data_point[field_name]
+        summed_data[key] = total
+
+    return summed_data
 
 
-# Summarize the data about minutes spent in the classroom
+
+total_minutes_by_account = sum_grouped_items(engagement_by_account, 'total_minutes_visited')
+total_lessons_by_account = sum_grouped_items(engagement_by_account, 'lessons_completed')
+days_visited_by_account = sum_grouped_items(engagement_by_account, 'has_visited')
+
+total_lessons = list(total_lessons_by_account.values())
 total_minutes = list(total_minutes_by_account.values())
-print('Mean:', np.mean(total_minutes))
-print('Standard deviation:', np.std(total_minutes))
-print('Minimum:', np.min(total_minutes))
-print('Maximum:', np.max(total_minutes))
+total_days_visited = list(days_visited_by_account.values())
+
+def describe_data(data, title):
+    print('Mean :', np.mean(data))
+    print('Standard deviation :', np.std(data))
+    print('Minimum: ', np.min(data))
+    print('Maximum: ', np.max(data))
+    plt.hist(data, bins=8)
+    plt.title(title)
+    plt.show()
+
+
+
+subway_project_lesson_keys = ['746169184', '3176718735']
+
+pass_subway_project = set()
+
+
+for student in paid_submissions:
+    if student['lesson_key'] in subway_project_lesson_keys and (student['assigned_rating'] == 'PASSED' or student['assigned_rating'] == 'DISTINCTION'):
+        pass_subway_project.add(student['account_key'])
+
+
+passing_engagement = []
+non_passing_engagement = []
+
+for engagement_record in paid_engagement_in_first_week:
+    if engagement_record['account_key'] in pass_subway_project:
+        passing_engagement.append(engagement_record)
+    else:
+        non_passing_engagement.append(engagement_record)
+
+print(len(pass_subway_project))
+
+print(len(passing_engagement))
+print(len(non_passing_engagement))
+
+
+passing_engagement_by_account = group_data(passing_engagement, 'account_key')
+non_passing_engagement_by_account = group_data(non_passing_engagement, 'account_key')
+
+passing_minutes = sum_grouped_items(passing_engagement_by_account, 'total_minutes_visited')
+non_passing_minutes = sum_grouped_items(non_passing_engagement_by_account, 'total_minutes_visited')
+
+describe_data(list(non_passing_minutes.values()), 'Non-Passing Minutes')
+describe_data(list(passing_minutes.values()), 'Passing Minutes')
+
+
+#priting stats
+describe_data(total_minutes, 'Total Minutes')
+print("printing stats for lessons completed")
+describe_data(total_lessons, 'Total Lessons')
+print("printing stats for days visited \n")
+describe_data(total_days_visited, 'Total days visited')
+# debugging find student with max minutes
+'''student_with_max_minutes = None
+max_minutes = 0
+for student, total_minutes in total_minutes_by_account.items():
+    if total_minutes > max_minutes:
+        max_minutes = total_minutes
+        student_with_max_minutes = student
+
+for engagement_record in paid_engagement_in_first_week:
+    if engagement_record['account_key'] == student_with_max_minutes:
+        print(engagement_record)
+'''
+
 
 
 #printing stats
