@@ -1,12 +1,14 @@
 import pandas as pd
 import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 
 nyc_subway_weather = pd.read_csv("nyc_subway_weather.csv")
 
 #nyc_subway_data = np.array(nyc_subway_weather)
-print(nyc_subway_weather.head())
-print(nyc_subway_weather.describe())
+#print(nyc_subway_weather.head())
+#print(nyc_subway_weather.describe())
 
 # Subway ridership for 5 stations on 10 different days
 ridership = np.array([
@@ -224,3 +226,51 @@ def standardize(df):
     '''
     return df.apply(standardize_column)
 print(standardize(grades_df))
+
+
+#############find second larges value in all colums########
+
+
+
+df = pd.DataFrame({
+    'a': [4, 5, 3, 1, 2],
+    'b': [20, 10, 40, 50, 30],
+    'c': [25, 20, 5, 15, 10]
+})
+
+# Change False to True for this block of code to see what it does
+
+# DataFrame apply() - use case 2
+if False:
+    print(df.apply(np.mean))
+    print(df.apply(np.max))
+def second_largest_in_col(col):
+    sorted_col = col.sort_values(ascending=False)
+    return sorted_col.iloc[1]
+
+def second_largest(df):
+    '''
+    Fill in this function to return the second-largest value of each
+    column of the input DataFrame.
+    '''
+    return df.apply(second_largest_in_col)
+
+
+## using groupby
+
+
+ridership_by_day = nyc_subway_weather.groupby('day_week').mean()['ENTRIESn_hourly']
+
+print(ridership_by_day)
+
+
+
+#ridership_by_day.plot()
+#plt.show()
+
+data_by_location = nyc_subway_weather.groupby(['latitude', 'longitude'], as_index=False).mean()
+print(data_by_location)
+scaled_entries = (data_by_location['ENTRIESn_hourly'] / data_by_location['ENTRIESn_hourly'].std())
+
+plt.scatter(data_by_location['latitude'], data_by_location['longitude'], s=scaled_entries)
+plt.show()
