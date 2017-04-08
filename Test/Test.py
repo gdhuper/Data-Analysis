@@ -22,7 +22,6 @@ enrollments = read_csv("enrollments.csv")
 daily_engagement = read_csv("daily_engagement.csv")
 project_submissions = read_csv("project_submissions.csv")
 
-
 ### For each of these three tables, find the number of rows in the table and
 ### the number of unique students in the table. To find the number of unique
 ### students, you might want to create a set of the account keys in each table.
