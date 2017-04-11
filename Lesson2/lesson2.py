@@ -5,8 +5,6 @@ life_expectancy = pd.read_csv("life_expectancy.csv")
 life_expectancy_array = np.array(list(life_expectancy))
 
 #print(life_expectancy_array.dtype)
-
-
 countries = ['Albania', 'Algeria', 'Andorra', 'Angola', 'Antigua and Barbuda',
              'Argentina', 'Armenia', 'Australia', 'Austria', 'Azerbaijan',
              'Bahamas', 'Bahrain', 'Bangladesh', 'Barbados', 'Belarus',
