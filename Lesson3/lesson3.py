@@ -3,7 +3,6 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-
 nyc_subway_weather = pd.read_csv("nyc_subway_weather.csv")
 
 #nyc_subway_data = np.array(nyc_subway_weather)
@@ -48,7 +47,6 @@ if False:
     b = np.array([[1, 1, 1], [2, 2, 2], [3, 3, 3]])
     print
     a + b
-
 
 '''def mean_riders_for_max_station(ridership):
     ''
