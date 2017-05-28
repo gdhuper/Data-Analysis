@@ -34,7 +34,6 @@ def parse_date(date):
     else:
         return dt.strptime(date, '%Y-%m-%d')
 
-
 # Takes a string which is either an empty string or represents an integer,
 # and returns an int or None.
 def parse_maybe_int(i):
