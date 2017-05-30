@@ -5,7 +5,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
-
 ## Longer version of code (replaced with shorter, equivalent version below)
 # enrollments = []
 # f = open('enrollments.csv', 'rb')
