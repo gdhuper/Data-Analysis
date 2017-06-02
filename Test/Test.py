@@ -65,8 +65,6 @@ for submission in project_submissions:
     submission['creation_date'] = parse_date(submission['creation_date'])
 
 
-
-
 def get_unique_students(data):
     unique_students = set()
     for data_point in data:
